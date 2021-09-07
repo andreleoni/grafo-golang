@@ -96,12 +96,12 @@ func profundidade(grafo *Grafo) {
 
 	for i := 0; i <= size; i++ {
 		if result[i] == branco {
-			visitaP(grafo, i, &result)
+			visitaProfundidade(grafo, i, &result)
 		}
 	}
 }
 
-func visitaP(grafo *Grafo, in int, result *[]int) {
+func visitaProfundidade(grafo *Grafo, in int, result *[]int) {
 	new_result := *result
 	new_result[in] = amarelo
 	adj := grafo.adj[in].cab
@@ -112,7 +112,7 @@ func visitaP(grafo *Grafo, in int, result *[]int) {
 		}
 
 		if new_result[in] == branco {
-			visitaP(grafo, adj.verticeDestino, result)
+			visitaProfundidade(grafo, adj.verticeDestino, result)
 		}
 
 		adj = adj.prox
