@@ -16,9 +16,9 @@ type Vertice struct {
 }
 
 type Adjacencia struct {
-	vertice int
-	peso    int
-	prox    *Adjacencia
+	verticeDestino int
+	peso           int
+	prox           *Adjacencia
 }
 
 func main() {
@@ -56,19 +56,19 @@ func imprime(grafo *Grafo) {
 		adj := grafo.adj[i].cab
 
 		for {
-			fmt.Printf("v%d(%d)", adj.vertice, adj.peso)
+			fmt.Printf("v%d(%d)", adj.verticeDestino, adj.peso)
 			adj = adj.prox
 			if adj == nil {
 				break
 			}
 		}
 
-		fmt.Println("\n")
+		fmt.Println("")
 	}
 }
 
 func criaAdj(v int, peso int) *Adjacencia {
-	return &Adjacencia{peso: peso, vertice: v}
+	return &Adjacencia{peso: peso, verticeDestino: v}
 }
 
 func criaAresta(grafo *Grafo, vi int, vf int, p int) {
@@ -107,19 +107,15 @@ func visitaP(grafo *Grafo, in int, result *[]int) {
 	adj := grafo.adj[in].cab
 
 	for {
-		if new_result[in] == branco {
-			visitaP(grafo, adj.vertice, result)
-		}
-
 		if adj == nil {
 			break
+		}
+
+		if new_result[in] == branco {
+			visitaP(grafo, adj.verticeDestino, result)
 		}
 
 		adj = adj.prox
-
-		if adj == nil {
-			break
-		}
 	}
 
 	new_result[in] = vermelho
