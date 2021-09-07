@@ -31,7 +31,11 @@ func main() {
 	criaAresta(&grafo, 3, 1, 3)
 	criaAresta(&grafo, 4, 3, 8)
 
-	profundidade(&grafo)
+	fmt.Println("Busca test3: ", busca(&grafo, "test3"))
+	fmt.Println("Busca test10: ", busca(&grafo, "test10"))
+	fmt.Println("Busca test2: ", busca(&grafo, "test2"))
+	fmt.Println("Busca test4: ", busca(&grafo, "test4"))
+	fmt.Println("Busca \"\": ", busca(&grafo, ""))
 
 	imprime(&grafo)
 }
@@ -40,7 +44,8 @@ func criaGrafo(v int) Grafo {
 	adjs := []Vertice{}
 
 	for i := 0; i <= v; i++ {
-		adjs = append(adjs, Vertice{})
+		data := fmt.Sprintf("test%d", i)
+		adjs = append(adjs, Vertice{data: data})
 	}
 
 	graf := Grafo{vertices: v, adj: adjs}
@@ -85,11 +90,20 @@ const branco = 0
 const amarelo = 1
 const vermelho = 2
 
+// Busca geral
+
+func busca(grafo *Grafo, chaveBusca string) bool {
+	return profundidade(grafo, chaveBusca)
+}
+
 // Busca por profundidade
 
-func profundidade(grafo *Grafo) {
+func profundidade(grafo *Grafo, chaveBusca string) bool {
+	skipVisitaProfundidade = false
+
 	size := grafo.vertices
 	result := []int{}
+	exists := false
 
 	for i := 0; i <= size; i++ {
 		result = append(result, branco)
@@ -97,15 +111,36 @@ func profundidade(grafo *Grafo) {
 
 	for i := 0; i <= size; i++ {
 		if result[i] == branco {
-			visitaProfundidade(grafo, i, &result)
+			if exists {
+				break
+			}
+
+			exists = visitaProfundidade(grafo, i, &result, chaveBusca)
 		}
 	}
+
+	return exists
 }
 
-func visitaProfundidade(grafo *Grafo, in int, result *[]int) {
+var skipVisitaProfundidade = false
+
+func visitaProfundidade(grafo *Grafo, in int, result *[]int, chaveBusca string) bool {
+	if skipVisitaProfundidade {
+		return skipVisitaProfundidade
+	}
+
+	currentAdj := grafo.adj[in]
+
+	if currentAdj.data == chaveBusca {
+		skipVisitaProfundidade = true
+
+		return skipVisitaProfundidade
+	}
+
 	new_result := *result
 	new_result[in] = amarelo
-	adj := grafo.adj[in].cab
+
+	adj := currentAdj.cab
 
 	for {
 		if adj == nil {
@@ -113,7 +148,7 @@ func visitaProfundidade(grafo *Grafo, in int, result *[]int) {
 		}
 
 		if new_result[adj.verticeDestino] == branco {
-			visitaProfundidade(grafo, adj.verticeDestino, result)
+			visitaProfundidade(grafo, adj.verticeDestino, result, chaveBusca)
 		}
 
 		adj = adj.prox
@@ -122,4 +157,6 @@ func visitaProfundidade(grafo *Grafo, in int, result *[]int) {
 	new_result[in] = vermelho
 
 	result = &new_result
+
+	return false
 }
