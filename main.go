@@ -24,6 +24,7 @@ type Adjacencia struct {
 func main() {
 	grafo := criaGrafo(5)
 	criaAresta(&grafo, 0, 1, 2)
+	criaAresta(&grafo, 0, 5, 2)
 	criaAresta(&grafo, 1, 2, 4)
 	criaAresta(&grafo, 2, 0, 12)
 	criaAresta(&grafo, 2, 4, 40)
@@ -111,7 +112,7 @@ func visitaProfundidade(grafo *Grafo, in int, result *[]int) {
 			break
 		}
 
-		if new_result[in] == branco {
+		if new_result[adj.verticeDestino] == branco {
 			visitaProfundidade(grafo, adj.verticeDestino, result)
 		}
 
